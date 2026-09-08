@@ -111,20 +111,22 @@ function Index() {
               <AppButton className="icon-button" aria-label="검색"><Search size={21} /></AppButton>
             </header>
             <section className="home-intro">
-              <p className="eyebrow">YOUR VISUAL ARCHIVE</p>
-              <h1>무엇을<br /><span>저장했나요?</span></h1>
-              <p className="item-count">{items.length.toString().padStart(2, "0")} SAVED ITEMS</p>
+              <p className="eyebrow">READ / PERSONAL INDEX</p>
+              <h1>저장한 것에서<br /><span>발견한 것</span></h1>
+              <div className="archive-summary"><span>{items.length.toString().padStart(2, "0")} SAVED</span><span>05 CATEGORIES</span><span>SEP 2026</span></div>
             </section>
             <nav className="category-scroll" aria-label="카테고리 필터">
               {categories.map((category) => (
                 <AppButton key={category} className={`filter-chip ${activeCategory === category ? "is-active" : ""}`} onClick={() => setActiveCategory(category)}>{category}</AppButton>
               ))}
             </nav>
-            <section className="image-grid" aria-label="저장한 이미지">
+            <section className="archive-list" aria-label="저장한 항목">
               {filtered.map((item, index) => (
-                <AppButton key={item.id} className={`image-tile tile-${index % 4}`} onClick={() => openDetail(item, "home")}>
-                  <img src={item.image} alt={item.title} width={1024} height={1280} loading={index > 1 ? "lazy" : undefined} />
-                  <span className={`image-label ${item.analyzing ? "analyzing" : ""}`}>{item.analyzing && <span className="pulse" />}{item.category}</span>
+                <AppButton key={item.id} className="archive-row" onClick={() => openDetail(item, "home")}>
+                  <span className="row-index">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="row-copy"><span className="row-meta">{item.analyzing ? "PROCESSING" : item.category} · 3 DAYS AGO</span><strong>{item.title}</strong><span className="row-tags">{item.analyzing ? "이미지를 읽고 있어요" : index % 2 ? "#blue  #object  #daily" : "#light  #wood  #minimal"}</span></span>
+                  <span className="row-image"><img src={item.image} alt="" width={1024} height={1280} loading={index > 1 ? "lazy" : undefined} /></span>
+                  <ChevronRight className="row-arrow" size={17} />
                 </AppButton>
               ))}
             </section>
@@ -154,8 +156,8 @@ function BottomNav({ view, onChange }: { view: View; onChange: (view: View) => v
 function Onboarding({ onStart }: { onStart: () => void }) {
   return <main className="app-shell"><section className="phone-surface onboarding">
     <span className="wordmark light">READ<span className="wordmark-dot">.</span></span>
-    <div className="onboarding-collage"><img src={interior} alt="밝은 우드 거실" width={1024} height={1280} /><img src={product} alt="파란 조명" width={1024} height={1280} /></div>
-    <div className="onboarding-copy"><p className="eyebrow">SAVE FIRST. DISCOVER LATER.</p><h1>저장만 하세요,<br />정리는 저희가 할게요</h1><p>사진첩에서 최근 저장한 이미지를<br />한번에 가져올 수 있어요.</p></div>
+    <div className="onboarding-index"><span>01 SAVE</span><span>02 ORGANIZE</span><span>03 DISCOVER</span><span>04 READ AGAIN</span></div>
+    <div className="onboarding-copy"><p className="eyebrow">SAVE FIRST. DISCOVER LATER.</p><h1>저장만 하세요,<br />정리는 저희가 할게요</h1><p>흩어진 이미지를 읽을 수 있는 기록으로.<br />당신이 반복해서 고른 것들을 발견해요.</p></div>
     <AppButton className="primary-button" onClick={onStart}><ImagePlus size={19} />사진첩에서 여러 장 가져오기</AppButton>
     <AppButton className="text-button" onClick={onStart}>나중에 할게요, 하나씩 저장할게요</AppButton>
   </section></main>;
@@ -174,18 +176,18 @@ function Add({ selected, setSelected, onCancel, onSave }: { selected: number[]; 
 function Detail({ item, deleteOpen, setDeleteOpen, onBack, onDelete }: { item: Item; deleteOpen: boolean; setDeleteOpen: (open: boolean) => void; onBack: () => void; onDelete: () => void }) {
   const tags = item.category === "패션" ? ["패션", "블루", "레이어드", "클래식", "저채도"] : ["공간", "우드", "자연광", "저채도", "미니멀"];
   return <main className="app-shell"><section className="phone-surface detail-screen">
-    <div className="detail-image"><img src={item.image} alt={item.title} width={1024} height={1280} /><header><AppButton className="glass-button" onClick={onBack} aria-label="뒤로가기"><ArrowLeft size={21} /></AppButton><AppButton className="glass-button" onClick={() => setDeleteOpen(true)} aria-label="삭제"><Trash2 size={19} /></AppButton></header><span className="detail-index">01 / 06</span></div>
-    <section className="detail-copy"><p className="eyebrow">AI READ</p><h1>{item.title}</h1>{item.analyzing ? <div className="analyzing-block"><span /><span /><p>이미지를 분석하고 있어요</p></div> : <><p className="analysis-text">차분한 색과 자연 소재가 만드는 편안한 분위기를 반복해서 저장하고 있어요.</p><div className="tag-list">{tags.map((tag) => <span key={tag}>#{tag}</span>)}</div></>}<p className="saved-date">3일 전 저장</p></section>
+    <header className="detail-text-header"><AppButton onClick={onBack} aria-label="뒤로가기"><ArrowLeft size={20} /></AppButton><span>READ / ITEM 01</span><AppButton onClick={() => setDeleteOpen(true)} aria-label="삭제"><Trash2 size={18} /></AppButton></header>
+    <section className="detail-copy"><p className="eyebrow">AI GENERATED NOTE</p><h1>{item.title}</h1>{item.analyzing ? <div className="analyzing-block"><span /><span /><p>이미지를 분석하고 있어요</p></div> : <><p className="analysis-text">차분한 색과 자연 소재가 만드는 편안한 분위기를 반복해서 저장하고 있어요. 강한 장식보다 빛, 질감, 여백이 있는 장면에 시선이 머뭅니다.</p><dl className="detail-data"><div><dt>CATEGORY</dt><dd>{tags[0]}</dd></div><div><dt>COLOR</dt><dd>저채도 / 내추럴</dd></div><div><dt>MOOD</dt><dd>조용함 / 미니멀</dd></div><div><dt>SAVED</dt><dd>3일 전</dd></div></dl><div className="tag-list">{tags.map((tag) => <span key={tag}>#{tag}</span>)}</div></>}<figure className="source-figure"><img src={item.image} alt={item.title} width={1024} height={1280} /><figcaption>ORIGINAL REFERENCE / 01</figcaption></figure></section>
     {deleteOpen && <div className="sheet-backdrop" onClick={() => setDeleteOpen(false)}><div className="bottom-sheet" onClick={(event) => event.stopPropagation()}><div className="sheet-handle" /><h2>이 저장물을 삭제할까요?</h2><p>분석 데이터도 함께 삭제돼요.</p><AppButton className="danger-button" onClick={onDelete}>삭제</AppButton><AppButton className="sheet-cancel" onClick={() => setDeleteOpen(false)}>취소</AppButton></div></div>}
   </section></main>;
 }
 
 function Discover({ items, onOpen }: { items: Item[]; onOpen: (item: Item) => void }) {
   const evidenceItems = [items[0], items[2], items[5]].filter((item): item is Item => item !== undefined);
-  return <section className="discover-screen"><header className="discover-header"><span className="wordmark">READ<span className="wordmark-dot">.</span></span><p className="eyebrow">DISCOVER / 02</p><h1>당신의 선택에서<br /><span>발견한 것</span></h1></header>
+  return <section className="discover-screen"><header className="discover-header"><span className="wordmark">READ<span className="wordmark-dot">.</span></span><p className="eyebrow">DISCOVER / 02</p><h1>당신의 선택에서<br /><span>발견한 것</span></h1><p className="discover-note">저장된 항목 사이에서 반복되는 단어와 조합을 읽었습니다.</p></header>
     <div className="insight-list">
-      <article className="insight-card featured"><div className="insight-number">01</div><p className="pattern-label">COMBINATION · 조합</p><h2>자연광과 우드 소재가<br />함께 있는 공간을<br />자주 저장했어요.</h2><div className="evidence-strip">{evidenceItems.map((item) => <AppButton key={item.id} onClick={() => onOpen(item)}><img src={item.image} alt={item.title} width={1024} height={1280} loading="lazy" /></AppButton>)}</div><AppButton className="evidence-link" onClick={() => evidenceItems[0] && onOpen(evidenceItems[0])}>근거 저장물 보기 <ChevronRight size={16} /></AppButton></article>
-      <article className="insight-card"><div className="insight-number">02</div><p className="pattern-label">REPEAT · 반복</p><h2>선명한 블루를<br />포인트로 고르고 있어요.</h2><div className="mini-evidence"><img src={fashion} alt="블루 패션" width={1024} height={1280} loading="lazy" /><img src={product} alt="블루 조명" width={1024} height={1280} loading="lazy" /></div></article>
+      <article className="insight-card featured"><div className="insight-number">01</div><p className="pattern-label">COMBINATION · 조합</p><h2>자연광과 우드 소재가<br />함께 있는 공간을<br />자주 저장했어요.</h2><p className="insight-body">공간 저장물 3개 중 2개에서 ‘자연광’과 ‘우드’가 함께 나타났어요. 밝고 차분한 공간의 조합에 반복적으로 시선이 머물고 있습니다.</p><ol className="evidence-text">{evidenceItems.map((item, index) => <li key={item.id}><AppButton onClick={() => onOpen(item)}><span>{String(index + 1).padStart(2, "0")}</span>{item.title}<ChevronRight size={14} /></AppButton></li>)}</ol><AppButton className="evidence-link" onClick={() => evidenceItems[0] && onOpen(evidenceItems[0])}>근거 저장물 읽기 <ChevronRight size={16} /></AppButton></article>
+      <article className="insight-card"><div className="insight-number">02</div><p className="pattern-label">REPEAT · 반복</p><h2>선명한 블루를<br />포인트로 고르고 있어요.</h2><p className="insight-body">패션과 제품처럼 서로 다른 분류에서도 같은 색이 이어집니다.</p><p className="keyword-line">BLUE / COBALT / FOCUS</p></article>
     </div>
   </section>;
 }
