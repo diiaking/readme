@@ -48,6 +48,7 @@ const initialItems: Item[] = [
 
 const categories = ["전체", "공간", "패션", "음식", "여행", "제품"];
 const gallery = [interior, fashion, nook, food, travel, product];
+const firstItem: Item = { id: 1, image: interior, category: "공간", title: "햇살이 머무는 거실" };
 
 function AppButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return <button className={className} {...props}>{children}</button>;
@@ -59,7 +60,7 @@ function Index() {
   const [items, setItems] = useState(initialItems);
   const [activeCategory, setActiveCategory] = useState("전체");
   const [selected, setSelected] = useState<number[]>([]);
-  const [activeItem, setActiveItem] = useState<Item>(initialItems[0]);
+  const [activeItem, setActiveItem] = useState<Item>(firstItem);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [toast, setToast] = useState("");
 
@@ -75,13 +76,17 @@ function Index() {
   };
 
   const saveSelected = () => {
-    const added = selected.map((index, offset) => ({
+    const added = selected.flatMap((index, offset) => {
+      const image = gallery[index];
+      if (!image) return [];
+      return [{
       id: Date.now() + offset,
-      image: gallery[index],
+      image,
       category: "분석 중",
       title: "새로운 저장물",
       analyzing: true,
-    }));
+      }];
+    });
     setItems((current) => [...added, ...current]);
     setSelected([]);
     setView("home");
@@ -176,9 +181,10 @@ function Detail({ item, deleteOpen, setDeleteOpen, onBack, onDelete }: { item: I
 }
 
 function Discover({ items, onOpen }: { items: Item[]; onOpen: (item: Item) => void }) {
+  const evidenceItems = [items[0], items[2], items[5]].filter((item): item is Item => item !== undefined);
   return <section className="discover-screen"><header className="discover-header"><span className="wordmark">READ<span className="wordmark-dot">.</span></span><p className="eyebrow">DISCOVER / 02</p><h1>당신의 선택에서<br /><span>발견한 것</span></h1></header>
     <div className="insight-list">
-      <article className="insight-card featured"><div className="insight-number">01</div><p className="pattern-label">COMBINATION · 조합</p><h2>자연광과 우드 소재가<br />함께 있는 공간을<br />자주 저장했어요.</h2><div className="evidence-strip">{[items[0], items[2], items[5]].filter(Boolean).map((item) => <AppButton key={item.id} onClick={() => onOpen(item)}><img src={item.image} alt={item.title} width={1024} height={1280} loading="lazy" /></AppButton>)}</div><AppButton className="evidence-link" onClick={() => items[0] && onOpen(items[0])}>근거 저장물 보기 <ChevronRight size={16} /></AppButton></article>
+      <article className="insight-card featured"><div className="insight-number">01</div><p className="pattern-label">COMBINATION · 조합</p><h2>자연광과 우드 소재가<br />함께 있는 공간을<br />자주 저장했어요.</h2><div className="evidence-strip">{evidenceItems.map((item) => <AppButton key={item.id} onClick={() => onOpen(item)}><img src={item.image} alt={item.title} width={1024} height={1280} loading="lazy" /></AppButton>)}</div><AppButton className="evidence-link" onClick={() => evidenceItems[0] && onOpen(evidenceItems[0])}>근거 저장물 보기 <ChevronRight size={16} /></AppButton></article>
       <article className="insight-card"><div className="insight-number">02</div><p className="pattern-label">REPEAT · 반복</p><h2>선명한 블루를<br />포인트로 고르고 있어요.</h2><div className="mini-evidence"><img src={fashion} alt="블루 패션" width={1024} height={1280} loading="lazy" /><img src={product} alt="블루 조명" width={1024} height={1280} loading="lazy" /></div></article>
     </div>
   </section>;
