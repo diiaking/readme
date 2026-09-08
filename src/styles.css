@@ -37,17 +37,19 @@ button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .home-intro { padding: 22px 24px 24px; }
 .home-intro h1,.discover-header h1 { margin: 13px 0 14px; font-family: "Nanum Gothic Coding", monospace; font-size: clamp(34px, 10vw, 44px); line-height: 1.16; letter-spacing: 0; }
 .home-intro h1 span,.discover-header h1 span { color: var(--primary); }
-.item-count { font-size: 11px; color: var(--muted-foreground); letter-spacing: .12em; }
+.archive-summary { display: flex; gap: 14px; padding-top: 4px; color: var(--muted-foreground); font-size: 9px; letter-spacing: .08em; }
 .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 0 24px 17px; scrollbar-width: none; }
 .filter-chip { flex: 0 0 auto; min-width: 51px; padding: 9px 15px; border: 1px solid var(--border); border-radius: 999px; background: var(--card); font-family: "Nanum Gothic Coding", monospace; font-size: 12px; }
 .filter-chip.is-active { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
-.image-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 0 3px; }
-.image-tile { position: relative; aspect-ratio: .82; overflow: hidden; background: var(--muted); padding: 0; }
-.image-tile.tile-1,.image-tile.tile-2 { aspect-ratio: .92; }
-.image-tile img,.photo-picker img,.detail-image>img,.evidence-strip img,.mini-evidence img { width: 100%; height: 100%; object-fit: cover; transition: transform .45s ease; }
-.image-tile:hover img { transform: scale(1.025); }
-.image-label { position: absolute; left: 10px; bottom: 10px; padding: 5px 8px; background: oklch(1 0 0 / .9); border-radius: 3px; font-size: 10px; }
-.image-label.analyzing { display: flex; align-items: center; gap: 5px; }
+.archive-list { border-top: 1px solid var(--foreground); margin: 0 24px; }
+.archive-row { width: 100%; min-height: 112px; display: grid; grid-template-columns: 25px 1fr 54px 15px; gap: 10px; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--border); background: transparent; text-align: left; }
+.row-index { align-self: start; padding-top: 4px; font-size: 9px; color: var(--muted-foreground); }
+.row-copy { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.row-meta,.row-tags { font-family: "IBM Plex Sans"; font-size: 8px; color: var(--muted-foreground); letter-spacing: .08em; text-transform: uppercase; }
+.row-copy strong { font-family: "Nanum Gothic Coding"; font-size: 14px; line-height: 1.4; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.row-image { width: 54px; height: 70px; overflow: hidden; background: var(--muted); filter: grayscale(.7); }
+.row-image img,.photo-picker img,.source-figure img { width: 100%; height: 100%; object-fit: cover; }
+.row-arrow { color: var(--primary); }
 .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); animation: pulse 1.4s infinite; }
 .bottom-nav { position: absolute; z-index: 10; left: 0; right: 0; bottom: 0; height: 82px; display: grid; grid-template-columns: 1fr 72px 1fr; align-items: center; border-top: 1px solid var(--border); background: oklch(1 0 0 / .94); backdrop-filter: blur(16px); }
 .bottom-nav button { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; background: transparent; color: var(--muted-foreground); font-size: 10px; }
@@ -57,10 +59,9 @@ button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
 .onboarding { min-height: 100dvh; padding: 28px 24px 30px; background: var(--primary); color: var(--primary-foreground); }
 .wordmark.light { color: var(--primary-foreground); }
-.onboarding-collage { height: 42vh; min-height: 310px; display: grid; grid-template-columns: 1.35fr .8fr; gap: 7px; margin: 24px -24px 0; transform: rotate(-3deg) scale(1.06); }
-.onboarding-collage img { width: 100%; height: 100%; object-fit: cover; }
-.onboarding-collage img:last-child { margin-top: 40px; height: calc(100% - 40px); }
-.onboarding-copy { position: relative; margin-top: 30px; }
+.onboarding-index { display: grid; gap: 0; margin: 76px 0 58px; border-top: 1px solid oklch(1 0 0 / .7); }
+.onboarding-index span { padding: 13px 0; border-bottom: 1px solid oklch(1 0 0 / .32); font-size: 11px; letter-spacing: .1em; }
+.onboarding-copy { position: relative; margin-top: 0; }
 .onboarding-copy .eyebrow { color: oklch(1 0 0 / .65); }
 .onboarding-copy h1 { margin: 10px 0; font-family: "Nanum Gothic Coding", monospace; font-size: 27px; line-height: 1.38; }
 .onboarding-copy>p:last-child { margin: 0; color: oklch(1 0 0 / .73); font-size: 13px; line-height: 1.7; }
@@ -83,16 +84,17 @@ button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .round-next { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: var(--primary); color: var(--primary-foreground); }
 .round-next:disabled { background: var(--muted); color: var(--muted-foreground); }
 
-.detail-image { position: relative; height: 57vh; min-height: 430px; background: var(--muted); }
-.detail-image header { position: absolute; z-index: 2; left: 16px; right: 16px; top: 20px; display: flex; justify-content: space-between; }
-.glass-button { background: oklch(1 0 0 / .88); border: 0; backdrop-filter: blur(8px); }
-.detail-index { position: absolute; right: 18px; bottom: 17px; padding: 6px 9px; background: oklch(0.17 0.02 265 / .72); color: var(--primary-foreground); font-size: 10px; }
-.detail-copy { padding: 26px 24px 34px; }
-.detail-copy h1 { margin: 9px 0 13px; font-family: "Nanum Gothic Coding", monospace; font-size: 25px; }
-.analysis-text { margin: 0; color: var(--muted-foreground); font-family: "Nanum Gothic Coding", monospace; font-size: 13px; line-height: 1.75; }
+.detail-text-header { height: 76px; display: flex; justify-content: space-between; align-items: end; padding: 0 20px 16px; border-bottom: 1px solid var(--foreground); }
+.detail-text-header button { padding: 0; background: transparent; }.detail-text-header span { font-size: 9px; letter-spacing: .1em; }
+.detail-copy { padding: 45px 24px 50px; }
+.detail-copy h1 { margin: 13px 0 25px; font-family: "Nanum Gothic Coding", monospace; font-size: 32px; line-height: 1.35; text-decoration: underline; text-decoration-color: var(--primary); text-underline-offset: 7px; }
+.analysis-text { max-width: 340px; margin: 0; color: var(--foreground); font-family: "Nanum Gothic Coding", monospace; font-size: 14px; line-height: 1.9; }
+.detail-data { margin: 32px 0 0; border-top: 1px solid var(--foreground); }
+.detail-data>div { display: grid; grid-template-columns: 100px 1fr; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.detail-data dt { color: var(--muted-foreground); font-size: 8px; letter-spacing: .1em; }.detail-data dd { margin: 0; font-family: "Nanum Gothic Coding"; font-size: 11px; }
 .tag-list { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 22px; }
 .tag-list span { padding: 7px 10px; border: 1px solid var(--border); border-radius: 3px; color: var(--primary); font-family: "Nanum Gothic Coding", monospace; font-size: 11px; }
-.saved-date { margin: 28px 0 0; color: var(--muted-foreground); font-size: 10px; }
+.source-figure { width: 130px; margin: 44px 0 0 auto; }.source-figure img { aspect-ratio: .8; filter: grayscale(1); }.source-figure figcaption { margin-top: 6px; font-size: 7px; color: var(--muted-foreground); }
 .analyzing-block span { display: block; height: 11px; margin: 8px 0; background: var(--muted); animation: pulse 1.5s infinite; }
 .analyzing-block span:nth-child(2) { width: 65%; }.analyzing-block p { font-size: 12px; color: var(--muted-foreground); }
 .sheet-backdrop { position: absolute; z-index: 30; inset: 0; display: flex; align-items: end; background: oklch(0.15 0.02 265 / .4); }
@@ -104,17 +106,19 @@ button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .discover-screen { padding-bottom: 30px; }
 .discover-header { padding: 30px 24px 25px; }
 .discover-header>.eyebrow { margin-top: 34px; }
+.discover-note { max-width: 280px; margin: 0; font-family: "Nanum Gothic Coding"; font-size: 11px; line-height: 1.7; color: var(--muted-foreground); }
 .insight-list { padding: 0 14px; display: grid; gap: 12px; }
 .insight-card { position: relative; overflow: hidden; padding: 22px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); }
-.insight-card.featured { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+.insight-card.featured { background: var(--card); color: var(--foreground); border-color: var(--foreground); }
 .insight-number { position: absolute; right: 17px; top: 13px; font-family: "IBM Plex Sans"; font-size: 48px; font-weight: 600; color: oklch(1 0 0 / .14); }
 .insight-card:not(.featured) .insight-number { color: var(--muted); }
 .pattern-label { margin: 0 0 31px; font-size: 9px; font-weight: 600; letter-spacing: .12em; opacity: .68; }
-.insight-card h2 { position: relative; margin: 0 0 23px; font-family: "Nanum Gothic Coding", monospace; font-size: 20px; line-height: 1.55; }
-.evidence-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
-.evidence-strip button { aspect-ratio: 1; padding: 0; overflow: hidden; background: var(--muted); }
+.insight-card h2 { position: relative; margin: 0 0 18px; font-family: "Nanum Gothic Coding", monospace; font-size: 20px; line-height: 1.55; text-decoration: underline; text-decoration-color: var(--primary); text-underline-offset: 5px; }
+.insight-body { max-width: 320px; margin: 0 0 20px; font-family: "Nanum Gothic Coding"; font-size: 11px; line-height: 1.8; color: var(--muted-foreground); }
+.evidence-text { margin: 0; padding: 0; border-top: 1px solid var(--border); list-style: none; }
+.evidence-text button { width: 100%; display: grid; grid-template-columns: 28px 1fr 16px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); background: transparent; text-align: left; font-family: "Nanum Gothic Coding"; font-size: 11px; }.evidence-text button span { color: var(--muted-foreground); font-size: 8px; }
 .evidence-link { display: flex; align-items: center; gap: 3px; margin-top: 17px; padding: 0; background: transparent; color: inherit; font-family: "Nanum Gothic Coding"; font-size: 11px; }
-.mini-evidence { height: 145px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.keyword-line { margin: 26px 0 0; padding-top: 12px; border-top: 1px solid var(--border); color: var(--primary); font-size: 9px; letter-spacing: .12em; }
 
 @keyframes pulse { 50% { opacity: .45; } }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
